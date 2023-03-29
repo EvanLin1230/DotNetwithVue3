@@ -1,15 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VueCliMiddleware;
+using System.Web.Http;
 
 namespace DotNetwithVue3
 {
@@ -30,6 +25,22 @@ namespace DotNetwithVue3
             {
                 configuration.RootPath = "ClientApp";
             });
+            // 20230329 Evan Swgger畫面設定
+            services.AddSwaggerGen(config =>
+            {
+                config.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "API Document",
+                    Description = "API Document For Evan Lin",
+                    Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                    {
+                        Name = "Evan Lin",
+                        Email = "evan_lin@orbit.com.tw"
+                    }
+                });
+            });
+            //
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +54,18 @@ namespace DotNetwithVue3
             app.UseRouting();
             app.UseSpaStaticFiles();
             app.UseAuthorization();
+
+            // 20230329 Evan 使用Swagger, SwaggerUI 方便測試 WebApi
+            app.UseSwagger(c =>
+            {
+                c.RouteTemplate = "/api/swagger/{DocumentName}/swagger.json";
+            });
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "API Document V1");
+                c.RoutePrefix = "api/swagger";
+            });
+            //
 
             app.UseEndpoints(endpoints =>
             {
