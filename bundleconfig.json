@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "ClientApp/dist/index.min.html",
+    "inputFiles": [
+      "ClientApp/dist/index.html"
+    ]
+  }
+]

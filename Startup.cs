@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
-using System.Web.Http;
 
 namespace DotNetwithVue3
 {
@@ -23,7 +22,9 @@ namespace DotNetwithVue3
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp";
+                // 20230330 Evan 網路上的解法，不確定有沒有用
+                // configuration.RootPath = "ClientApp";
+                configuration.RootPath = "ClientApp/dist";
             });
             // 20230329 Evan Swgger畫面設定
             services.AddSwaggerGen(config =>
@@ -55,22 +56,49 @@ namespace DotNetwithVue3
             app.UseSpaStaticFiles();
             app.UseAuthorization();
 
-            // 20230329 Evan 使用Swagger, SwaggerUI 方便測試 WebApi
-            app.UseSwagger(c =>
-            {
-                c.RouteTemplate = "/api/swagger/{DocumentName}/swagger.json";
-            });
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "API Document V1");
-                c.RoutePrefix = "api/swagger";
-            });
-            //
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            // 20230329 Evan 使用Swagger, SwaggerUI 方便測試 WebApi
+            //app.UseSwagger(c =>
+            //{
+            //    c.RouteTemplate = "/api/swagger/{DocumentName}/swagger.json";
+            //});
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "API Document V1");
+            //    c.RoutePrefix = "api/swagger";
+            //});
+            //
+
+            //app.UseSwagger(c => 
+            //{
+            //    c.RouteTemplate = "/swagger/swagger/{DocumentName}/swagger.json";
+            //});
+            //app.UseSwaggerUI(c =>
+            //{
+            //    // 未測試完
+            //    c.SwaggerEndpoint("swagger/v1/swagger.json", "API Document V1");
+            //    c.RoutePrefix = "swagger";
+            //    // localhost:{port}/swagger/v1/swagger.json 有東西
+            //    // localhost:{port}/swagger/index.html => 找 localhost:{port}/swagger/swagger/v1/swagger.json => 找不到
+
+            //    //c.SwaggerEndpoint("api/swagger/v1/swagger.json", "API Document V1");
+            //    // localhost:{port}/swagger/v1/swagger.json 有東西
+            //    // localhost:{port}/swagger/index.html => 找 localhost:{port}/api/swagger/v1/swagger.json => 找不到
+            //});
+
+            // 20230331 Evan 沒有錯誤版本
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "API Document V1");
+                // localhost:{port}/swagger/v1/swagger.json 有東西
+                // localhost:{port}/swagger/index.html => 找 localhost:{port}/swagger/v1/swagger.json => 找得到
+            });
+            //
 
             app.UseSpa(spa =>
             {

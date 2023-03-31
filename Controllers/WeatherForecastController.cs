@@ -23,7 +23,7 @@ namespace DotNetwithVue3.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet, ActionName("WhatTheFuck")]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
